@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Générateur de mot de passe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center"
+  >
+    <div class="bg-white p-8 rounded-xl shadow-xl w-full max-w-lg">
+      <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">
+        Générateur de mot de passe
+      </h1>
+
+      <!-- Sélection de la longueur -->
+      <div class="mb-4">
+        <label for="length" class="block text-sm font-medium text-gray-700"
+          >Longueur :</label
+        >
+        <input
+          id="length"
+          type="number"
+          min="4"
+          max="50"
+          value="12"
+          class="w-full mt-1 p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+        />
+      </div>
+
+      <!-- Options de composition du mot de passe -->
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <label class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="lowercase"
+            checked
+            class="accent-indigo-600"
+          />
+          <span>Minuscules (a-z)</span>
+        </label>
+        <label class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="uppercase"
+            checked
+            class="accent-indigo-600"
+          />
+          <span>Majuscules (A-Z)</span>
+        </label>
+        <label class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="numbers"
+            checked
+            class="accent-indigo-600"
+          />
+          <span>Chiffres (0-9)</span>
+        </label>
+        <label class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="symbols"
+            checked
+            class="accent-indigo-600"
+          />
+          <span>Spéciaux (!@#$...)</span>
+        </label>
+      </div>
+
+      <!-- Bouton de génération -->
+      <button
+        onclick="generatePassword()"
+        class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition mb-4"
+      >
+        Générer le mot de passe
+      </button>
+
+      <!-- Affichage du mot de passe -->
+      <div
+        class="bg-gray-100 p-3 rounded-md border text-sm font-mono text-gray-800 break-words min-h-[48px]"
+        id="password"
+      ></div>
+
+      <!-- Bouton de copie -->
+      <button
+        onclick="copyToClipboard()"
+        class="mt-3 text-indigo-600 text-sm hover:underline"
+      >
+        Copier dans le presse-papiers
+      </button>
+    </div>
+
+    <script>
+      function generatePassword() {
+        const length = parseInt(document.getElementById("length").value);
+        const useLower = document.getElementById("lowercase").checked;
+        const useUpper = document.getElementById("uppercase").checked;
+        const useNumbers = document.getElementById("numbers").checked;
+        const useSymbols = document.getElementById("symbols").checked;
+
+        // Caractères disponibles selon les options
+        const lower = "abcdefghijklmnopqrstuvwxyz";
+        const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const numbers = "0123456789";
+        const symbols = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
+
+        let charset = "";
+        if (useLower) charset += lower;
+        if (useUpper) charset += upper;
+        if (useNumbers) charset += numbers;
+        if (useSymbols) charset += symbols;
+
+        // S'il n'y a aucune option cochée
+        if (charset === "") {
+          alert("Veuillez sélectionner au moins un type de caractère.");
+          return;
+        }
+
+        let password = "";
+        for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * charset.length);
+          password += charset[randomIndex];
+        }
+
+        document.getElementById("password").innerText = password;
+      }
+
+      // Copie du mot de passe
+      function copyToClipboard() {
+        const text = document.getElementById("password").innerText;
+        if (!text) {
+          alert("Aucun mot de passe à copier !");
+          return;
+        }
+        navigator.clipboard
+          .writeText(text)
+          .then(() => alert("Mot de passe copié dans le presse-papiers !"))
+          .catch(() => alert("Erreur lors de la copie."));
+      }
+    </script>
+  </body>
+</html>
